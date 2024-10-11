@@ -7,6 +7,7 @@ let vragen_allemaal = [
 let button1;
 let button2;
 
+let timer = 5;
 let score = 0;
 let vraag_nummer = 0;
 let welke_vraag_is_goed;
@@ -20,6 +21,7 @@ function setup() {
 }
 
 function maakNieuweVraag() {
+  timerActive = true;
   background(220);
   maakVraag(
     vragen_allemaal[vraag_nummer][0],
@@ -30,6 +32,8 @@ function maakNieuweVraag() {
 }
 
 function controlleerAntwoord1() {
+  timerActive = false;
+  timer = 5;
   if (welke_vraag_is_goed == 0) {
     button1.style("background-color", "green");
     score++;
@@ -43,7 +47,10 @@ function controlleerAntwoord1() {
     setTimeout(maakNieuweVraag, 2000);
   }
 }
+
 function controlleerAntwoord2() {
+  timerActive = false;
+  timer = 5;
   if (welke_vraag_is_goed == 1) {
     button2.style("background-color", "green");
     score++;
@@ -59,13 +66,29 @@ function controlleerAntwoord2() {
 }
 
 function theEnd() {
+  vraag_nummer = 0;
   background(220);
-  button1.remove();
-  button2.remove();
+  button1.html("");
+  button2.html("");
   text("Je score is: " + score, 10, 10);
 }
 
-function draw() {}
+function draw() {
+  if (timerActive) {
+    timer = timer - deltaTime / 1000;
+  }
+  rect(100, 100, 60);
+  text(round(timer), 120, 120);
+  if (timer < 0) {
+    timer = 5;
+    vraag_nummer++;
+    if (vraag_nummer >= vragen_allemaal.length) {
+      theEnd();
+    } else {
+      maakNieuweVraag();
+    }
+  }
+}
 
 function maakVraag(vraag, antwoord1, antwoord2, welkeIsGoed) {
   text(vraag, 10, 10);
